@@ -82,6 +82,53 @@ func (cli *Client) SavePurchaseDocument(ctx context.Context, filters map[string]
 	return res.ImportReports, nil
 }
 
+func (cli *Client) UpdatePurchaseDocumentRowsBulk(ctx context.Context,
+	bulkFilters []map[string]interface{},
+	baseFilters map[string]string,
+) (respBulk SavePurchaseDocumentResponseBulk, err error) {
+	bulkInputs := make([]common.BulkInput, 0, len(bulkFilters))
+	for _, bulkFilterMap := range bulkFilters {
+		bulkInputs = append(bulkInputs, common.BulkInput{
+			MethodName: "updatePurchaseDocumentRows",
+			Filters:    bulkFilterMap,
+		})
+	}
+
+	resp, err := cli.SendRequestBulk(ctx, bulkInputs, baseFilters)
+	if err != nil {
+		return respBulk, err
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return respBulk, err
+	}
+
+	if err := json.Unmarshal(body, &respBulk); err != nil {
+		return respBulk, fmt.Errorf("ERPLY API: failed to unmarshal UpdatePurchaseDocumentRowsResponseBulk from '%s': %v", string(body), err)
+	}
+
+	if !common.IsJSONResponseOK(&respBulk.Status) {
+		return respBulk, sharedCommon.NewErplyError(
+			respBulk.Status.ErrorCode.String(),
+			respBulk.Status.Request+": "+respBulk.Status.ResponseStatus,
+			respBulk.Status.ErrorCode,
+		)
+	}
+
+	for _, bulkRespItem := range respBulk.BulkItems {
+		if !common.IsJSONResponseOK(&bulkRespItem.Status.Status) {
+			return respBulk, sharedCommon.NewErplyError(
+				bulkRespItem.Status.ErrorCode.String(),
+				bulkRespItem.Status.Request+": "+bulkRespItem.Status.ResponseStatus,
+				respBulk.Status.ErrorCode,
+			)
+		}
+	}
+
+	return respBulk, nil
+}
+
 func (cli *Client) SavePurchaseDocumentBulk(
 	ctx context.Context,
 	bulkFilters []map[string]interface{},
