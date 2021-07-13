@@ -5,6 +5,11 @@ import (
 	sharedCommon "github.com/erply/api-go-wrapper/pkg/api/common"
 )
 
+const (
+	InventoryTransferACCEPTED = "ACCEPTED"
+	InventoryTransferFULLFILLED = "FULLFILLED"
+)
+
 type (
 	GetWarehousesResponse struct {
 		Status     sharedCommon.Status `json:"status"`
