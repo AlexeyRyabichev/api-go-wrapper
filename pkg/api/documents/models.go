@@ -94,6 +94,7 @@ type PurchaseDocument struct {
 
 type PurchaseDocumentRow struct {
 	ProductID        int         `json:"productID"`
+	StableRowId      int         `json:"stableRowID"`
 	ServiceID        int         `json:"serviceID"`
 	ItemName         string      `json:"itemName"`
 	Code             string      `json:"code"`
