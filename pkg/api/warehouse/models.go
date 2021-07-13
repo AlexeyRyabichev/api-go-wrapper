@@ -122,8 +122,49 @@ type (
 		Code                                 string `json:"code"`
 		ManualDiscountDisablesPromotionTiers []int  `json:"manualDiscountDisablesPromotionTiers"`
 	}
+
 	GetReasonCodesResponse struct {
 		Status      sharedCommon.Status `json:"status"`
 		ReasonCodes []ReasonCode        `json:"records"`
+	}
+
+	GetInventoryTransferResponse struct {
+		Status             sharedCommon.Status `json:"status"`
+		InventoryTransfers []InventoryTransfer `json:"records"`
+	}
+
+	InventoryTransfer struct {
+		InventoryTransferID         int                    `json:"inventoryTransferID"`
+		InventoryTransferNo         int                    `json:"inventoryTransferNo"`
+		CreatorID                   int                    `json:"creatorID"`
+		WarehouseFromID             int                    `json:"warehouseFromID"`
+		WarehouseToID               int                    `json:"warehouseToID"`
+		DeliveryAddressID           int                    `json:"deliveryAddressID"`
+		CurrencyCode                string                 `json:"currencyCode"`
+		CurrencyRate                string                 `json:"currencyRate"`
+		Date                        string                 `json:"date"`
+		InventoryTransactionDate    string                 `json:"inventoryTransactionDate"`
+		ShippingDateRequested       string                 `json:"shippingDateRequested"`
+		ShippingDateActual          string                 `json:"shippingDateActual"`
+		Notes                       string                 `json:"notes"`
+		Status                      string                 `json:"status"`
+		Confirmed                   int                    `json:"confirmed"`
+		Added                       int                    `json:"added"`
+		LastModified                int                    `json:"lastModified"`
+		InventoryTransferOrderID    int                    `json:"inventoryTransferOrderID,omitempty"`
+		Type                        string                 `json:"type"`
+		Rows                        []InventoryTransferRow `json:"rows,omitempty"`
+		FollowupInventoryTransferID int                    `json:"followupInventoryTransferID,omitempty"`
+	}
+
+	InventoryTransferRow struct {
+		ProductID        int    `json:"productID"`
+		Price            string `json:"price"`
+		Amount           string `json:"amount"`
+		PackageID        int    `json:"packageID"`
+		AmountOfPackages string `json:"amountOfPackages"`
+		AmountInPackage  int    `json:"amountInPackage"`
+		PackageType      string `json:"packageType"`
+		PackageTypeID    int    `json:"packageTypeID"`
 	}
 )

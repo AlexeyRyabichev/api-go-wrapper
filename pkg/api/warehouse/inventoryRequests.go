@@ -140,6 +140,24 @@ func (cli *Client) SaveInventoryTransfer(ctx context.Context, filters map[string
 	return res.Results[0].InventoryTransferID, nil
 }
 
+func (cli *Client) GetInventoryTransfers(ctx context.Context, filters map[string]string) ([]InventoryTransfer, error) {
+	resp, err := cli.SendRequest(ctx, "getInventoryTransfers", filters)
+	if err != nil {
+		return nil, err
+	}
+
+	var res GetInventoryTransferResponse
+	if err := json.NewDecoder(resp.Body).Decode(&res); err != nil {
+		return nil, sharedCommon.NewFromError("failed to unmarshal GetInventoryTransfer", err, 0)
+	}
+
+	if !common.IsJSONResponseOK(&res.Status) {
+		return nil, sharedCommon.NewFromResponseStatus(&res.Status)
+	}
+
+	return res.InventoryTransfers, nil
+}
+
 func (cli *Client) GetReasonCodes(ctx context.Context, filters map[string]string) ([]ReasonCode, error) {
 	resp, err := cli.SendRequest(ctx, "getReasonCodes", filters)
 	if err != nil {
