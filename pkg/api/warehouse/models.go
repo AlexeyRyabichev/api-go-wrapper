@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	InventoryTransferACCEPTED = "ACCEPTED"
-	InventoryTransferFULLFILLED = "FULLFILLED"
+	InventoryTransferACCEPTED  = "ACCEPTED"
+	InventoryTransferFULFILLED = "FULFILLED"
 )
 
 type (
@@ -171,5 +171,36 @@ type (
 		AmountInPackage  int    `json:"amountInPackage"`
 		PackageType      string `json:"packageType"`
 		PackageTypeID    int    `json:"packageTypeID"`
+	}
+
+	GetInventoryWriteOffsResponse struct {
+		Status             sharedCommon.Status `json:"status"`
+		InventoryWriteOffs []InventoryWriteOff `json:"records"`
+	}
+
+	InventoryWriteOff struct {
+		InventoryWriteOffID      int                    `json:"inventoryWriteOffID"`
+		InventoryWriteOffNo      int                    `json:"inventoryWriteOffNo"`
+		CreatorID                int                    `json:"creatorID"`
+		WarehouseID              int                    `json:"warehouseID"`
+		InventoryID              int                    `json:"inventoryID"`
+		StocktakingID            int                    `json:"stocktakingID"`
+		RecipientID              int                    `json:"recipientID"`
+		CurrencyCode             string                 `json:"currencyCode"`
+		CurrencyRate             string                 `json:"currencyRate"`
+		Date                     string                 `json:"date"`
+		InventoryTransactionDate string                 `json:"inventoryTransactionDate"`
+		Comments                 string                 `json:"comments"`
+		ReasonID                 int                    `json:"reasonID"`
+		Confirmed                int                    `json:"confirmed"`
+		Added                    int                    `json:"added"`
+		LastModified             int                    `json:"lastModified"`
+		Rows                     []InventoryWriteOffRow `json:"rows"`
+	}
+
+	InventoryWriteOffRow struct {
+		ProductID int    `json:"productID"`
+		Price     string `json:"price"`
+		Amount    string `json:"amount"`
 	}
 )
