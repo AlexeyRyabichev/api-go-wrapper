@@ -176,6 +176,24 @@ func (cli *Client) GetInventoryWriteOffs(ctx context.Context, filters map[string
 	return res.InventoryWriteOffs, nil
 }
 
+func (cli *Client) GetInventoryRegistrations(ctx context.Context, filters map[string]string) ([]InventoryRegistration, error) {
+	resp, err := cli.SendRequest(ctx, "getInventoryRegistrations", filters)
+	if err != nil {
+		return nil, err
+	}
+
+	var res GetInventoryRegistrationsResponse
+	if err := json.NewDecoder(resp.Body).Decode(&res); err != nil {
+		return nil, sharedCommon.NewFromError("failed to unmarshal GetInventoryRegistrations", err, 0)
+	}
+
+	if !common.IsJSONResponseOK(&res.Status) {
+		return nil, sharedCommon.NewFromResponseStatus(&res.Status)
+	}
+
+	return res.InventoryRegistrations, nil
+}
+
 func (cli *Client) GetReasonCodes(ctx context.Context, filters map[string]string) ([]ReasonCode, error) {
 	resp, err := cli.SendRequest(ctx, "getReasonCodes", filters)
 	if err != nil {

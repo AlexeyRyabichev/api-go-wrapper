@@ -203,4 +203,40 @@ type (
 		Price     string `json:"price"`
 		Amount    string `json:"amount"`
 	}
+
+	GetInventoryRegistrationsResponse struct {
+		Status                 sharedCommon.Status     `json:"status"`
+		InventoryRegistrations []InventoryRegistration `json:"records"`
+	}
+
+	InventoryRegistration struct {
+		InventoryRegistrationID  int                        `json:"inventoryRegistrationID"`
+		InventoryRegistrationNo  int                        `json:"inventoryRegistrationNo"`
+		CreatorID                int                        `json:"creatorID"`
+		WarehouseID              int                        `json:"warehouseID"`
+		InventoryID              int                        `json:"inventoryID"`
+		StocktakingID            int                        `json:"stocktakingID"`
+		SupplierID               int                        `json:"supplierID"`
+		ReasonID                 int                        `json:"reasonID"`
+		CurrencyCode             string                     `json:"currencyCode"`
+		CurrencyRate             string                     `json:"currencyRate"`
+		Date                     string                     `json:"date"`
+		InventoryTransactionDate string                     `json:"inventoryTransactionDate"`
+		Cause                    string                     `json:"cause"`
+		Confirmed                int                        `json:"confirmed"`
+		Added                    int                        `json:"added"`
+		LastModified             int                        `json:"lastModified"`
+		Rows                     []InventoryRegistrationRow `json:"rows"`
+	}
+
+	InventoryRegistrationRow struct {
+		ProductID        int    `json:"productID"`
+		Price            string `json:"price"`
+		Amount           string `json:"amount"`
+		PackageID        int    `json:"packageID"`
+		AmountOfPackages string `json:"amountOfPackages"`
+		AmountInPackage  int    `json:"amountInPackage"`
+		PackageType      string `json:"packageType"`
+		PackageTypeID    int    `json:"packageTypeID"`
+	}
 )

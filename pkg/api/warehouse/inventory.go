@@ -9,5 +9,6 @@ type InventoryManager interface {
 	SaveInventoryTransfer(ctx context.Context, filters map[string]string) (inventoryTransferID int, err error)
 	GetInventoryTransfers(ctx context.Context, filters map[string]string) ([]InventoryTransfer, error)
 	GetInventoryWriteOffs(ctx context.Context, filters map[string]string) ([]InventoryWriteOff, error)
+	GetInventoryRegistrations(ctx context.Context, filters map[string]string) ([]InventoryRegistration, error)
 	GetReasonCodes(ctx context.Context, filters map[string]string) ([]ReasonCode, error)
 }
