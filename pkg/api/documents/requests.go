@@ -7,9 +7,12 @@ import (
 	"github.com/erply/api-go-wrapper/internal/common"
 	sharedCommon "github.com/erply/api-go-wrapper/pkg/api/common"
 	"io/ioutil"
+	"math"
 )
 
 func (cli *Client) GetPurchaseDocuments(ctx context.Context, filters map[string]string) ([]PurchaseDocument, error) {
+	docs := make([]PurchaseDocument, 0)
+
 	resp, err := cli.SendRequest(ctx, "getPurchaseDocuments", filters)
 	if err != nil {
 		return nil, err
@@ -28,7 +31,40 @@ func (cli *Client) GetPurchaseDocuments(ctx context.Context, filters map[string]
 		return nil, sharedCommon.NewFromResponseStatus(&res.Status)
 	}
 
-	return res.PurchaseDocuments, nil
+	docs = res.PurchaseDocuments
+	if res.Status.RecordsInResponse < res.Status.RecordsTotal {
+		totalPages := int(math.Ceil(float64(res.Status.RecordsTotal) / float64(res.Status.RecordsInResponse)))
+		newFilters := make([]map[string]interface{}, 0)
+
+		bulkNewFilters := make([][]map[string]interface{}, 0)
+
+		for i := 2; i <= totalPages; i++ {
+			cpyFilter := make(map[string]interface{})
+			for k, v := range filters {
+				cpyFilter[k] = v
+			}
+			cpyFilter["pageNo"] = i
+			newFilters = append(newFilters, cpyFilter)
+
+			if i%20 == 0 {
+				bulkNewFilters = append(bulkNewFilters, newFilters)
+				newFilters = make([]map[string]interface{}, 0)
+			}
+		}
+
+		for _, newFilters := range bulkNewFilters {
+			secondaryResp, err := cli.GetPurchaseDocumentsBulk(ctx, newFilters, map[string]string{})
+			if err != nil {
+				return []PurchaseDocument{}, err
+			}
+
+			for _, bulkItem := range secondaryResp.BulkItems {
+				docs = append(docs, bulkItem.PurchaseDocuments...)
+			}
+		}
+	}
+
+	return docs, nil
 }
 
 func (cli *Client) GetPurchaseDocumentsBulk(ctx context.Context, bulkFilters []map[string]interface{}, baseFilters map[string]string) (GetPurchaseDocumentResponseBulk, error) {
